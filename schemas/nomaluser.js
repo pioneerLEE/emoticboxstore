@@ -8,10 +8,10 @@ const nomaluserSchema = new Schema({
     ref:'User',
     required: true,
   },
-  nick:{
+  /*nick:{ //필요한가?
     type:String,
     required: true,
-  },
+  },*/
   emojipacks:[
     {
         type:ObjectId,
