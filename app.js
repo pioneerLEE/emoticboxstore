@@ -6,6 +6,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var socialRouter = require('./routes/social')
+var mypageRouter = require('./routes/mypage')
+
 var passport = require('passport');
 var app = express();
 var connect = require('./schemas');
@@ -25,6 +27,7 @@ app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/social',socialRouter);
+app.use('/mypage',mypageRouter);
 
 //404처리 미들웨어
 app.use((req,res,next)=>{
