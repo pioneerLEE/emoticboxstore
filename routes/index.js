@@ -16,7 +16,7 @@ require('dotenv').config();
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);//sendgrid 설정
 
-
+/*
 passport.use(new Strategy({
   clientID: "728295241017802",
   clientSecret: "d9ca379b3dec2992a887e37627406099",
@@ -60,7 +60,6 @@ router.get('/auth/facebook', passport.authenticate('facebook', {
 }));
 
 router.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }), async(req, res,next)=>{
-  console.log('받긴 받나?');
   try{
     const token = await JWT.sign({_id:req.user._id},cfg.jwtSecret,{expiresIn:'30 days'});
     res.json(token)
@@ -68,7 +67,7 @@ router.get('/auth/facebook/callback', passport.authenticate('facebook', { failur
     next(error);
   }
 });
-
+*/
 
 
 //이메일 인증
