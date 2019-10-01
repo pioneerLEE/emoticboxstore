@@ -30,5 +30,7 @@ module.exports = () =>{
     require('./emojipack');
     require('./emoji');
     require('./tag');
+    require('./emojipack_user');
+    require('./dibs');
 }
 

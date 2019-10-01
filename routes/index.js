@@ -9,8 +9,6 @@ const Company = require('../schemas/company');
 const JWT = require("jsonwebtoken");
 const auth = require('../middlewares/auth')();
 const cfg = require('../jwt_config');
-var passport = require('passport');
-var Strategy = require('passport-facebook').Strategy;
 require('dotenv').config();
 
 const sgMail = require('@sendgrid/mail');

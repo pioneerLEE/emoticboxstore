@@ -89,4 +89,4 @@ const emojipackSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('EmojiPack', emojipackSchema);
+module.exports = mongoose.model('Emojipack', emojipackSchema);
