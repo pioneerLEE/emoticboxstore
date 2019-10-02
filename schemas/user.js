@@ -15,17 +15,20 @@ const userSchema = new Schema({
   password:{
     type: String,
   },
-  nomaluser:{
+  normaluser:{
     type:ObjectId,
-    ref:'Nomaluser'
+    ref:'Normaluser',
+    default:null
   },
   author:{
     type:ObjectId,
-    ref:'Author'
+    ref:'Author',
+    default:null
   },
   company:{
     type:ObjectId,
-    ref:'Company'
+    ref:'Company',
+    default:null
   },
   email_verified :{ 
     type: Boolean, 

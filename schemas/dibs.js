@@ -9,7 +9,7 @@ const dibsSchema = new Schema({
   },
   user:{
     type:ObjectId,
-    ref:'User'
+    ref:'Normaluser'
   },
   data_created:{
     type: Date,

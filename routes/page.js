@@ -4,7 +4,8 @@ const crypto = require('crypto');
 const router = express.Router();
 const User = require('../schemas/user');
 const Author = require('../schemas/author');
-const Nomaluser = require('../schemas/nomaluser');
+const Visitinfo = require('../schemas/visitinfo');
+const Normaluser = require('../schemas/normaluser');
 const Company = require('../schemas/company');
 const Dibs = require('../schemas/dibs');
 const Emoji = require('../schemas/emoji');
@@ -12,12 +13,85 @@ const Emojipack = require('../schemas/emojipack');
 const Emojipack_User = require('../schemas/emojipack_user');
 const auth = require('../middlewares/auth')();
 
-//이모티콘 상세 페이지(작가 보유 확인) ...? 작가가 보유한건지 따로 빼야할까? 
-router.get('/detail/:id',auth.authenticate(),async(req,res,next)=>{
+//이모티콘 상세 페이지 이탈 후 페이지 머문 시간 저장
+router.put('/out/:id',auth.authenticate(),async(req,res,next)=>{
     try{
-        let exEmojipack = await Emojipack.findOne({_id:req.params.id}).populate('author emojis')
+        let now = new Date();
+        const exUser = await User.findOne({_id:req.user._id});
+        const exEmojipack = await Emojipack.findOne({_id:req.params.id})
+        const exVisitinfo = await Visitinfo.findOne({visitor:exUser.normaluser, emojipack:exEmojipack._id});
+        if(!exUser || !exEmojipack || !exVisitinfo){
+            res.sendStatus(404);
+        }else if(exVisitinfo.cumulative_time+now-exVisitinfo.latest_visit_time>60000){
+            Visitinfo.update({
+                visitor:exUser.normaluser, emojipack:exEmojipack._id
+            },{
+                cumulative_time:60000,
+                latest_out_time:now
+            })
+            res.sendStatus(200);
+        }else{
+            Visitinfo.update({
+                visitor:exUser.normaluser, emojipack:exEmojipack._id
+            },{
+                cumulative_time:exVisitinfo.cumulative_time+now-exVisitinfo.latest_visit_time,
+                latest_out_time:now
+            }) 
+            res.sendStatus(200);   
+        }
+    }catch(error){
+        next(error);
+    }
+})
+
+
+//이모티콘 상세 페이지 방문 후 로그인 정보 및 방문기록
+router.get('/visit/:id',auth.authenticate(),async(req,res,next)=>{
+    try{
+        let now = new Date();
+        let exEmojipack = await Emojipack.findOne({_id:req.params.id})
+        if(!exEmojipack){
+            res.sendStatus(404);
+        }
         const isPurchsed = await Emojipack_User.findOne({owner:req.user._id,emojipack:exEmojipack._id});
-        res.json({exEmojipack,isPurchsed});
+        const exUser = await User.findOne({_id:req.user._id});
+        if(exUser.normaluser){
+            const isVisted = await Visitinfo.findOne({visitor:exUser.normaluser, emojipack:exEmojipack._id});
+            if(isVisted && isVisted.cumulative_time<60000){
+                Visitinfo.update({
+                    visitor:exUser.normaluser,
+                    emojipack:exEmojipack._id,
+                },{
+                    latest_visit_time:now,
+                    count:isVisted.count+1
+                })
+            }else{
+                const newVisitinfo = new Visitinfo({
+                    emojipack:exEmojipack._id,
+                    visitor:exUser.normaluser,
+                    latest_visit_time:now
+                });
+                newVisitinfo.save();
+            }
+        }
+        if(isPurchsed){
+            res.json({isPurchsed:true});
+        }else{
+            res.json({isPurchsed:false});
+        }
+        
+    }catch(error){
+        next(error);
+    }
+});
+//이모티콘 상세 페이지(로그인 상관 없음)
+router.get('/detail/:id',async(req,res,next)=>{
+    try{
+        let exEmojipack = await Emojipack.findOne({_id:req.params.id}).populate('author emojis');
+        if(!exEmojipack){
+            res.sendStatus(404);
+        }
+        res.json({exEmojipack,isPurchsed:false});
     }catch(error){
         next(error);
     }
@@ -51,7 +125,8 @@ router.get('/newlist', async(req,res,next)=>{
 router.post('/dibs/:emojipackid', auth.authenticate(),async(req,res,next)=>{
     try{
         const exEmojipack = await Emojipack.findOne({_id:req.params.emojipackid});
-        const exDibs = await Dibs.findOne({emojipack : exEmojipack._id,user:req.user._id});
+        const exUser = await User.findOne({_id:req.user._id});
+        const exDibs = await Dibs.findOne({emojipack : exEmojipack._id,user:exUser.normalUser});
 
         if(!exDibs && exEmojipack){
             const newDibs = await new Dibs({
@@ -72,7 +147,8 @@ router.post('/dibs/:emojipackid', auth.authenticate(),async(req,res,next)=>{
 router.delete('/dibs/:emojipackid', auth.authenticate(),async(req,res,next)=>{
     try{
         const exEmojipack = await Emojipack.findOne({_id:req.params.emojipackid});
-        const exDibs = await Dibs.findOneAndRemove({emojipack : exEmojipack._id,user:req.user._id});
+        const exUser = await User.findOne({_id:req.user._id});
+        const exDibs = await Dibs.findOneAndRemove({emojipack : exEmojipack._id,user:exUser.normalUser});
 
         if(exDibs && exEmojipack){
             res.sendStatus(200);

@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const router = express.Router();
 const User = require('../schemas/user');
 const Author = require('../schemas/author');
-const Nomaluser = require('../schemas/nomaluser');
+const Normaluser = require('../schemas/normaluser');
 const Company = require('../schemas/company');
 const JWT = require("jsonwebtoken");
 const auth = require('../middlewares/auth')();
@@ -49,7 +49,7 @@ router.post('/signup/user',async(req,res,next)=>{
         nick,
         birth
       })
-      const exNomaluser = new Nomaluser({
+      const exNomaluser = new Normaluser({
         user:exUser._id,
         nick,
         birth

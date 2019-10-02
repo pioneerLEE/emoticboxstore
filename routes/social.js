@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../schemas/user');
-const Nomaluser = require('../schemas/nomaluser');
+const Normaluser = require('../schemas/normaluser');
 const cfg = require('../jwt_config');
 const passport = require('passport');
 const Strategy = require('passport-facebook').Strategy;
@@ -24,11 +24,11 @@ passport.use(new Strategy({
         provider:'facebook',
         email_verified:true,
       });
-      const nomaluser = new Nomaluser({
+      const normaluser = new Normaluser({
         user:newUser._id
         //나중에 생일 업데이트 필요
       })
-      nomaluser.save();
+      normaluser.save();
       newUser.save((user) => {
         return done(null, user);
       });

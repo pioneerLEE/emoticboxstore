@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const User = require('../schemas/user');
 const Author = require('../schemas/author');
-const Nomaluser = require('../schemas/nomaluser');
+const Normaluser = require('../schemas/normaluser');
 const Emojipack = require('../schemas/emojipack');
 const Emoji = require('../schemas/emoji')
 const Company = require('../schemas/company');
@@ -15,7 +15,7 @@ const auth = require('../middlewares/auth')();
 //보유한 이모티콘
 router.get('/myemoji',auth.authenticate(),async(req,res,next)=>{
     try{
-        const exUser = await Nomaluser.findOne({user:req.user._id})
+        const exUser = await Normaluser.findOne({user:req.user._id})
         let result=[];
         
         for(var i=0;i<exUser.emojipacks.length;i++){
@@ -41,7 +41,8 @@ router.get('/myemoji',auth.authenticate(),async(req,res,next)=>{
 //찜 목록
 router.get('/dibs', auth.authenticate(),async(req,res,next)=>{
     try{
-        const dibs = await Dibs.find({user:req.user._id}).populate('emojipack');
+        const exUser = await User.findOne({_id:req.user._id});
+        const dibs = await Dibs.find({user:exUser.normaluser}).populate('emojipack');
         let result=[];
         if(dibs===[]){
             res.json(result);

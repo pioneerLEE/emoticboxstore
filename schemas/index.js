@@ -24,7 +24,7 @@ module.exports = () =>{
     });
     require('./user');
     require('./author');
-    require('./nomaluser');
+    require('./normaluser');
     require('./company')
     require('./service')
     require('./emojipack');
@@ -32,5 +32,6 @@ module.exports = () =>{
     require('./tag');
     require('./emojipack_user');
     require('./dibs');
+    require('./visitinfo');
 }
 
