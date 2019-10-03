@@ -11,7 +11,7 @@ const emojipack_userSchema = new Schema({
     type: ObjectId,
     ref: 'Emojipack'
   },
-  data_untill: {
+  date_untill: {
     type: Date,
     default: null
   },

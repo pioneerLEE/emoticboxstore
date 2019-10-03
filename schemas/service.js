@@ -19,6 +19,10 @@ const serviceSchema = new Schema({
     type:ObjectId,
     ref:'Company'
   },
+  language:{
+    type:ObjectId,
+    ref:'Language'
+  },
   tags:[
     {
       type:ObjectId,

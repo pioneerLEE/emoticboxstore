@@ -31,6 +31,10 @@ const visitinfoSchema = new Schema({
     type: Date,
     default: Date(),
   },
+  data_fix:{
+    type: Date,
+    default: Date(),
+  },
 });
 
 module.exports = mongoose.model('Visitinfo', visitinfoSchema);
