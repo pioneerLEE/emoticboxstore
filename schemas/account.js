@@ -4,8 +4,8 @@ const { Schema } = mongoose;
 const { Types: { ObjectId }} = Schema;
 const accountSchema = new Schema({
   bank:{
-    type: String,
-    required: true,
+    type:ObjectId,
+    ref:'Bank'
   },
   number:{
     type: Number,

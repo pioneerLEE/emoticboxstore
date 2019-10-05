@@ -6,12 +6,13 @@ const walletSchema = new Schema({
   money:{
     type: Number,
     required: true,
+    default:0,
   },
   owner:{
     type:ObjectId,
     ref:'User'
   },
-  data_created:{
+  data_fix:{
     type: Date,
     default: Date(),
   },

@@ -8,10 +8,10 @@ const normaluserSchema = new Schema({
     ref:'User',
     required: true,
   },
-  /*nick:{ //필요한가?
+  nick:{ //필요한가?
     type:String,
     required: true,
-  },*/
+  },
   emojipacks:[
     {
         type:ObjectId,

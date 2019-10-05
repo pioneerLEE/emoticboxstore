@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const { Types: { ObjectId } } = Schema;
-const emojipack_userSchema = new Schema({
+const proprietaryinfoSchema = new Schema({
   owner: {
     type: ObjectId,
     ref: 'User'
@@ -21,4 +21,4 @@ const emojipack_userSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Emojipack_User', emojipack_userSchema);
+module.exports = mongoose.model('Proprietaryinfo', proprietaryinfoSchema);

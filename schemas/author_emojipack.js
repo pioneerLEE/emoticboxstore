@@ -15,6 +15,10 @@ const author_emojipackSchema = new Schema({
     type: Date,
     default: Date(),
   },
+  data_fix:{
+    type: Date,
+    default: Date(),
+  },
 });
 
 module.exports = mongoose.model('Author_emojipack', author_emojipackSchema);

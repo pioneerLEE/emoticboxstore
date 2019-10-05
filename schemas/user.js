@@ -37,6 +37,20 @@ const userSchema = new Schema({
   key_for_verify :{
     type: String,
   },
+  typicalTags: [
+    {
+      type: ObjectId,
+      ref: 'Tag'
+    }
+  ],
+  account:{
+    type:ObjectId,
+    ref:'Account'
+  },
+  paypal:{
+    type:ObjectId,
+    ref:'Paypal'
+  },
   data_created:{
     type: Date,
     default: Date(),

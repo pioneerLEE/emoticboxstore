@@ -11,6 +11,12 @@ const walletlogSchema = new Schema({
     type:ObjectId,
     ref:'Wallet'
   },
+  isAccount:{
+    type:Boolean
+  },
+  isPaypal:{
+    type:Boolean
+  },
   data_created:{
     type: Date,
     default: Date(),

@@ -27,14 +27,6 @@ const companySchema = new Schema({
         ref:'Service'
       }
   ],
-  account:{
-    type:ObjectId,
-    ref:'Account'
-  },
-  paypal:{
-    type:ObjectId,
-    ref:'Paypal'
-  },
   data_created:{
     type: Date,
     default: Date(),

@@ -1,6 +1,4 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const router = express.Router();
 const User = require('../schemas/user');
 const Author = require('../schemas/author');
@@ -84,6 +82,7 @@ router.get('/visit/:id',auth.authenticate(),async(req,res,next)=>{
         next(error);
     }
 });
+
 //이모티콘 상세 페이지(로그인 상관 없음)
 router.get('/detail/:id',async(req,res,next)=>{
     try{
@@ -96,6 +95,7 @@ router.get('/detail/:id',async(req,res,next)=>{
         next(error);
     }
 });
+
 //새로나온 이모티콘
 router.get('/newlist', async(req,res,next)=>{
     try{

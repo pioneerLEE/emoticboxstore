@@ -5,7 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var socialRouter = require('./routes/social')
+var socialRouter = require('./routes/social');
+var purchaseRouter = require('./routes/purchase');
 var mypageRouter = require('./routes/mypage')
 var searchRouter = require('./routes/search');
 var pageRouter = require('./routes/page');
@@ -29,6 +30,7 @@ app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/', pageRouter);
+app.use('/', purchaseRouter);
 app.use('/social',socialRouter);
 app.use('/mypage',mypageRouter);
 app.use('/search',searchRouter);
