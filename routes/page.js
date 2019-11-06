@@ -8,8 +8,9 @@ const Company = require('../schemas/company');
 const Dibs = require('../schemas/dibs');
 const Emoji = require('../schemas/emoji');
 const Emojipack = require('../schemas/emojipack');
-const Emojipack_User = require('../schemas/emojipack_user');
+const Proprietaryinfo = require('../schemas/proprietaryinfo');
 const auth = require('../middlewares/auth')();
+const fs = require('fs');
 
 //이모티콘 상세 페이지 이탈 후 페이지 머문 시간 저장
 router.put('/out/:id',auth.authenticate(),async(req,res,next)=>{
@@ -51,7 +52,7 @@ router.get('/visit/:id',auth.authenticate(),async(req,res,next)=>{
         if(!exEmojipack){
             res.sendStatus(404);
         }
-        const isPurchsed = await Emojipack_User.findOne({owner:req.user._id,emojipack:exEmojipack._id});
+        const isPurchsed = await Proprietaryinfo.findOne({owner:req.user._id,emojipack:exEmojipack._id});
         const exUser = await User.findOne({_id:req.user._id});
         if(exUser.normaluser){
             const isVisted = await Visitinfo.findOne({visitor:exUser.normaluser, emojipack:exEmojipack._id});
@@ -90,7 +91,7 @@ router.get('/detail/:id',async(req,res,next)=>{
         if(!exEmojipack){
             res.sendStatus(404);
         }
-        res.json({exEmojipack,isPurchsed:false});
+        res.status(201).json({exEmojipack,isPurchsed:false});
     }catch(error){
         next(error);
     }
@@ -163,8 +164,10 @@ router.delete('/dibs/:emojipackid', auth.authenticate(),async(req,res,next)=>{
 
 //인기있는 이모티콘(판매량)
 router.get('/popularlist', async(req,res,next)=>{
+    const {isFree,number} = req.query
+    console.log(isFree,number)
     try{
-        const emojipacks = await Emojipack.find({}).sort({sold:-1}).limit(100);
+        const emojipacks = await Emojipack.find({isFree:parseInt(isFree)}).sort({sold:-1}).limit(parseInt(number)); //심사가 완료된것만 필터링 해야함
 
         let result=[];
         
@@ -175,16 +178,53 @@ router.get('/popularlist', async(req,res,next)=>{
                 _id:emojipacks[i]._id,
                 packname:emojipacks[i].name,
                 author:{nick:emojipacks[i].author.nick , _id: emojipacks[i].author._id},
-                typicalEmoji:emojipacks[i].typicalEmoji.png512
+                typicalEmoji:emojipacks[i].typicalEmoji.png512,
+                isFree:isFree
             }
             result.push(pack);
         }
+        // fs.readFile(result[0].typicalEmoji, (error, data) => {
+        //     if (error) {
+        //       console.error(error);
+        //       next(error);
+        //     }
 
-        res.json(result)
+        //     res.end(data);
+        // });
+        res.status(201).json(result)
     }catch(error){
         next(error);
     }
 })
+//이미지 가져오기
+router.get('/load',async(req,res,next)=>{ //추가적인 용량, 파일 형식도 잡을 수 있도록
+    const { path,emojiId } = req.query;
+    try{
+        if(path){
+            fs.readFile((path), (error, data) => {
+                if (error) {
+                  console.error(error);
+                  next(error);
+                }
+                res.end(data);
+            });
+        }
+        else if(emojiId){
+            emoji = await Emoji.findOne({_id:emojiId});
+            fs.readFile((emoji.png512), (error, data) => {
+                if (error) {
+                  console.error(error);
+                  next(error);
+                }
+                res.end(data);
+            });
+        }
+        
+    }catch(error){
+        next(error);
+    }
+}) //"emoji/테스트1/1.gif
+//특정이모티콘 다운로드
 
 //해당 작가 작품
 //금주의 인기있는 이모티콘

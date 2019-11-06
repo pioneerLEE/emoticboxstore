@@ -10,7 +10,7 @@ const Payment = require('../schemas/payment')
 
 //결제 완료
 router.post('/purchase/service',auth.authenticate(),async(req,res,next)=>{
-    const { serviceid, emojipackid, serviceid, platform, money, useService } = req.body;
+    const { serviceid, emojipackid, platform, money, useService } = req.body;
     //결제 완료에 대한 정보가 req.body를 통해 전달 되어야함.
     try{
         const exUser = await User.findOne({_id:req.user._id});

@@ -28,13 +28,14 @@ router.get('/signup/confirmEmail',async(req,res,next)=>{
     next(error);
   }
 });
+//일반유저
 router.post('/signup/user',async(req,res,next)=>{
   const { email, password, nick, birth } = req.body;
   try{
     const [checkUser] = await User.find({email});
     if(checkUser){ //email 중복 체크
       res.send(401);
-    }else{ //회원가입
+    }else if(email && password && nick && birth){ //회원가입
       let key_for_verify = crypto.randomBytes(256).toString('hex').substr(100, 5)
       key_for_verify += crypto.randomBytes(256).toString('base64').substr(50, 5); //인증 키
       const url = 'http://' + req.get('host')+'/signup/confirmEmail'+'?key='+key_for_verify; //인증을 위한 주소
@@ -60,11 +61,15 @@ router.post('/signup/user',async(req,res,next)=>{
         subject: '회원가입 완료',
         html : '<h1>이메일 인증을 위해 URL을 클릭해주세요.</h1><br>'+url
       };
+      exUser.normaluser = exNomaluser.id;
+      exUser.author = exAuthor.id;
       sgMail.send(msg);
       exUser.save();
       exAuthor.save();
       exNomaluser.save();
       res.json(201);
+    }else{
+      res.send(401);
     }
   }catch(error){
     next(error);
@@ -130,7 +135,7 @@ router.post('/signup/email',async(req,res,next)=>{
 router.post('/signin',async(req,res,next)=>{
   const {email, password} = req.body;
   try{
-    const [exUser] = await User.find({email});
+    const exUser = await User.findOne({email});
     const result = await bcrypt.compare(password,exUser.password);
 
     if(result){
@@ -144,7 +149,8 @@ router.post('/signin',async(req,res,next)=>{
         expiresIn: '30 days'    // 유효 시간은 30일
       });
       res.status(200).json({
-        token: token
+        token: token,
+        User:exUser
       });
     }else{
       res.send(401); //수정해야함

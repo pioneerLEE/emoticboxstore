@@ -9,7 +9,11 @@ const modificationreqSchema = new Schema({
   },
   message:{
       type: String,
-  }
+  },
+  data_created:{
+    type: Date,
+    default: Date(),
+  },
 });
 
 module.exports = mongoose.model('Modificationreq', modificationreqSchema);

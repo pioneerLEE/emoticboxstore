@@ -16,6 +16,11 @@ const emojipackSchema = new Schema({
   //이모티콘 설명
   summary: {
     type: String,
+    default:""
+  },
+  keyword:{
+    type:String,
+    default:""
   },
   //이모티콘 지원 언어 ex) global, En, Kr, JP
   language: {
@@ -72,6 +77,7 @@ const emojipackSchema = new Schema({
   },
   price: {
     type: Number,
+    default: 0,
   },
   //심사 중: "decision in process" 완료: "complete" 반려:"return" 수정 확인중 : 'checking modification'
   status:{
