@@ -99,24 +99,14 @@ router.get('/detail/:id',async(req,res,next)=>{
 
 //새로나온 이모티콘
 router.get('/newlist', async(req,res,next)=>{
+    const {number} = req.query
     try{
-        const emojipacks = await Emojipack.find({}).sort({data_created:-1}).limit(100);
-
-        let result=[];
-        
-        for(var i=0;i<emojipacks.length;i++){
-            emojipacks[i].typicalEmoji = await Emoji.findOne({_id:emojipacks[i].typicalEmoji});
-            emojipacks[i].author = await Author.findOne({_id:emojipacks[i].author})
-            let pack={
-                _id:emojipacks[i]._id,
-                packname:emojipacks[i].name,
-                author:{nick:emojipacks[i].author.nick , _id: emojipacks[i].author._id},
-                typicalEmoji:emojipacks[i].typicalEmoji.png512
-            }
-            result.push(pack);
-        }
-
-        res.json(result)
+        const emojipacks = await Emojipack.find({}).populate('author').sort({data_created:-1}).limit(parseInt(number));
+        if(emojipacks){
+            res.status(201).json(emojipacks)
+        }else{
+            res.sendStatus(204)
+        }        
     }catch(error){
         next(error);
     }
@@ -165,37 +155,54 @@ router.delete('/dibs/:emojipackid', auth.authenticate(),async(req,res,next)=>{
 //인기있는 이모티콘(판매량)
 router.get('/popularlist', async(req,res,next)=>{
     const {isFree,number} = req.query
-    console.log(isFree,number)
     try{
-        const emojipacks = await Emojipack.find({isFree:parseInt(isFree)}).sort({sold:-1}).limit(parseInt(number)); //심사가 완료된것만 필터링 해야함
-
+        let emojipacks;
+        if(!(-1===parseInt(isFree))){
+            emojipacks = await Emojipack.find({ isFree:parseInt(isFree) }).sort({ sold:-1 }).limit(parseInt(number)); //심사가 완료된것만 필터링 해야함
+        }else{
+            emojipacks = await Emojipack.find().sort({ sold:-1 }).limit(parseInt(number)); //심사가 완료된것만 필터링 해야함
+        }
+        
         let result=[];
         
-        for(var i=0;i<emojipacks.length;i++){
+        for(let i=0;i<emojipacks.length;i++){
             emojipacks[i].typicalEmoji = await Emoji.findOne({_id:emojipacks[i].typicalEmoji});
             emojipacks[i].author = await Author.findOne({_id:emojipacks[i].author})
             let pack={
-                _id:emojipacks[i]._id,
-                packname:emojipacks[i].name,
-                author:{nick:emojipacks[i].author.nick , _id: emojipacks[i].author._id},
-                typicalEmoji:emojipacks[i].typicalEmoji.png512,
-                isFree:isFree
+                _id: emojipacks[i]._id,
+                packname: emojipacks[i].name,
+                author: {nick:emojipacks[i].author.nick , _id: emojipacks[i].author._id},
+                typicalEmoji: emojipacks[i].typicalEmoji.png512,
+                isFree: emojipacks[i].isFree,
+                price: emojipacks[i].price,
             }
             result.push(pack);
         }
-        // fs.readFile(result[0].typicalEmoji, (error, data) => {
-        //     if (error) {
-        //       console.error(error);
-        //       next(error);
-        //     }
-
-        //     res.end(data);
-        // });
         res.status(201).json(result)
     }catch(error){
         next(error);
     }
-})
+});
+router.get('/bestCreator', async(req,res,next)=>{
+    const { number } = req.query
+    try{
+        const [bestEmojipack] = await Emojipack.find().sort({ sold:-1 }).limit(1); //제일 만이 팔린 이모티콘 탐색
+        const bestCreator = bestEmojipack.author;
+        let result= await Emojipack.find({author:bestCreator}).limit(parseInt(number)).populate('author');
+        for(let i=0;i<result.length;i++){
+            for(let j=0;j<6;j++){
+                result[i].emojis[j] = await Emoji.findOne({_id:result[i].emojis[j]});
+            }    
+        }
+        if(result){
+            res.status(201).json(result)
+        }else{
+            res.sendStatus(204);
+        }
+    }catch(error){
+        next(error);
+    }
+});
 //이미지 가져오기
 router.get('/load',async(req,res,next)=>{ //추가적인 용량, 파일 형식도 잡을 수 있도록
     const { path,emojiId } = req.query;

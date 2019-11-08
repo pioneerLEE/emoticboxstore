@@ -38,12 +38,6 @@ router.post('/purchase/service',auth.authenticate(),async(req,res,next)=>{
         }else{
             res.sendStatus(204)
         }
-        
-
-        
-        
-
-
     }catch(error){
         next(error);
     }
