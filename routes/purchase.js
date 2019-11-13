@@ -43,5 +43,28 @@ router.post('/purchase/service',auth.authenticate(),async(req,res,next)=>{
     }
 })
 
+//임시방편
+router.post('/getpack',auth.authenticate(),async(req,res,next)=>{
+    const { emojipackid } = req.query;
+    try{
+        const exNormaluser = await Normaluser.findOne({user:req.user._id});
+        const exEmojipack = await Emojipack.findOne({_id:emojipackid});
+        if(exNormaluser && exEmojipack){
+            let isExist = (exNormaluser.emojipacks.indexOf(emojipackid) !==-1);
+            if(!isExist){
+                exNormaluser.emojipack.push(emojipackid);
+                await exNormaluser.save();
+                res.sendStatus(200);
+            }else{
+                res.sendStatus(202);
+            }
+        }else{
+            res.sendStatus(204);
+        }    
+    }catch(error){
+        next(error);
+    }
+})
+
 
 module.exports = router;
