@@ -20,19 +20,18 @@ router.get('/myemoji',auth.authenticate(),async(req,res,next)=>{
         
         for(var i=0;i<exUser.emojipacks.length;i++){
             exUser.emojipacks[i] = await Emojipack.findOne({_id:exUser.emojipacks[i]});
-            exUser.emojipacks[i].typicalEmoji = await Emoji.findOne({_id:exUser.emojipacks[i].typicalEmoji});
             exUser.emojipacks[i].author = await Author.findOne({_id:exUser.emojipacks[i].author})
             let pack={
-                _id:exUser.emojipacks[i]._id,
-                packname:exUser.emojipacks[i].name,
-                author:{nick:exUser.emojipacks[i].author.nick , _id: exUser.emojipacks[i].author._id},
-                typicalEmoji:exUser.emojipacks[i].typicalEmoji.png512
+                _id: exUser.emojipacks[i]._id,
+                name: exUser.emojipacks[i].name,
+                author: {nick:exUser.emojipacks[i].author.nick , _id: exUser.emojipacks[i].author._id},
+                typicalEmoji: exUser.emojipacks[i].typicalEmoji,
+                isFree: exUser.emojipacks[i].isFree,
+                price: exUser.emojipacks[i].price,
             }
-            console.log('1',result)
             result.push(pack);
         }
-        console.log("2",result);
-        res.json(result);
+        res.status(201).json(result)
     }catch(error){
         next(error);
     }

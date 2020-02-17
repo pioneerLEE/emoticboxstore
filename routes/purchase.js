@@ -45,14 +45,15 @@ router.post('/purchase/service',auth.authenticate(),async(req,res,next)=>{
 
 //임시방편
 router.post('/getpack',auth.authenticate(),async(req,res,next)=>{
-    const { emojipackid } = req.query;
+    const { emojipackid } = req.body;
     try{
+        console.log(emojipackid);
         const exNormaluser = await Normaluser.findOne({user:req.user._id});
         const exEmojipack = await Emojipack.findOne({_id:emojipackid});
         if(exNormaluser && exEmojipack){
             let isExist = (exNormaluser.emojipacks.indexOf(emojipackid) !==-1);
             if(!isExist){
-                exNormaluser.emojipack.push(emojipackid);
+                exNormaluser.emojipacks.push(emojipackid);
                 await exNormaluser.save();
                 res.sendStatus(200);
             }else{

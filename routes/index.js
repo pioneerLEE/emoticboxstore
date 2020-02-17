@@ -67,9 +67,9 @@ router.post('/signup/user',async(req,res,next)=>{
       exUser.save();
       exAuthor.save();
       exNomaluser.save();
-      res.json(201);
+      res.sendStatus(201);
     }else{
-      res.send(401);
+      res.sendStatus(401);
     }
   }catch(error){
     next(error);
