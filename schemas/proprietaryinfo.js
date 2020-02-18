@@ -5,7 +5,7 @@ const { Types: { ObjectId } } = Schema;
 const proprietaryinfoSchema = new Schema({
   owner: {
     type: ObjectId,
-    ref: 'User'
+    ref: 'Normaluser'
   },
   emojipack: {
     type: ObjectId,

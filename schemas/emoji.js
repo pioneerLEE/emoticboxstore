@@ -24,24 +24,6 @@ const emojiSchema = new Schema({
   png512:{
     type: String,
   },
-  tmpGif128:{
-    type: String,
-  },
-  tmpGif256:{
-    type: String,
-  },
-  tmpGif512:{
-    type: String,
-  },
-  tmpPng128:{
-    type: String,
-  },
-  tmpPng256:{
-    type: String,
-  },
-  tmpPng512:{
-    type: String,
-  },
   word:{
     type:String,
   },

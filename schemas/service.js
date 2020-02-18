@@ -26,13 +26,13 @@ const serviceSchema = new Schema({
   tags:[
     {
       type:ObjectId,
-      ref:'Tags'
+      ref:'Tag'
     }
   ],
   antitags:[
     {
       type:ObjectId,
-      ref:'Tags'
+      ref:'Tag'
     }
   ],
   category:{

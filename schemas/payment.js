@@ -19,6 +19,10 @@ const paymentSchema = new Schema({
     type:ObjectId,
     ref:'Service'
   },
+  platform:{
+    type:ObjectId,
+    ref:'Platform'
+  },
   money:{
     type: Number,
     required: true,

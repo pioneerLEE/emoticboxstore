@@ -8,6 +8,9 @@ const authorSchema = new Schema({
     ref:'User',
     required: true,
   },
+  profile:{
+    type: String,
+  },
   nick:{
     type: String,
     required: true,

@@ -2,18 +2,16 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const { Types: { ObjectId }} = Schema;
-const guestSchema = new Schema({
+const submitlogSchema = new Schema({
+  user:{
+    type:ObjectId,
+    ref:'Nomaluser'
+  },
   service:{
     type:ObjectId,
     ref:'Service'
   },
-  emojipacks:[
-    {
-        type:ObjectId,
-        ref:'Emojipack'
-    }
-  ],
-  guest_id:{
+  id:{
     type: String,
     required: true,
   },
@@ -21,6 +19,10 @@ const guestSchema = new Schema({
     type: Date,
     default: Date(),
   },
+  data_fix:{
+    type: Date,
+    default: Date(),
+  },
 });
 
-module.exports = mongoose.model('Guest', guestSchema);
+module.exports = mongoose.model('Submitlog', submitlogSchema);

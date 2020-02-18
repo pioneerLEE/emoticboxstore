@@ -6,7 +6,11 @@ const countrySchema = new Schema({
   name:{
     type: String,
     required: true,
-  }
+  },
+  language:{
+    type:ObjectId,
+    ref:'Language'
+  },
 });
 
 module.exports = mongoose.model('Country', countrySchema);

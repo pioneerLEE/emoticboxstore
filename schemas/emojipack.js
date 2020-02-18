@@ -71,6 +71,18 @@ const emojipackSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  isReqTrans: {
+    type: Boolean,
+    default: false,
+  },
+  emojiCount: {
+    type: Number,
+    default: 0,
+  },
+  sale: {
+    type: Boolean,
+    default: false,
+  },
   sold: {
     type: Number,
     default: 0,

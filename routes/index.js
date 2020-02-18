@@ -28,14 +28,15 @@ router.get('/signup/confirmEmail',async(req,res,next)=>{
     next(error);
   }
 });
-//일반유저
+//일반유저 회원가입
 router.post('/signup/user',async(req,res,next)=>{
-  const { email, password, nick, birth } = req.body;
+  const { email, password, birth } = req.body;
+  console.log(email,password,birth)
   try{
-    const [checkUser] = await User.find({email});
+    const checkUser = await User.findOne({email});
     if(checkUser){ //email 중복 체크
       res.send(401);
-    }else if(email && password && nick && birth){ //회원가입
+    }else if(email && password && birth){ //회원가입
       let key_for_verify = crypto.randomBytes(256).toString('hex').substr(100, 5)
       key_for_verify += crypto.randomBytes(256).toString('base64').substr(50, 5); //인증 키
       const url = 'http://' + req.get('host')+'/signup/confirmEmail'+'?key='+key_for_verify; //인증을 위한 주소
@@ -45,14 +46,8 @@ router.post('/signup/user',async(req,res,next)=>{
         password:hash,
         key_for_verify
       });
-      const exAuthor = new Author({
-        user:exUser._id,
-        nick,
-        birth
-      })
       const exNomaluser = new Normaluser({
         user:exUser._id,
-        nick,
         birth
       })
       const msg = { //인증 메일
@@ -62,10 +57,8 @@ router.post('/signup/user',async(req,res,next)=>{
         html : '<h1>이메일 인증을 위해 URL을 클릭해주세요.</h1><br>'+url
       };
       exUser.normaluser = exNomaluser.id;
-      exUser.author = exAuthor.id;
       sgMail.send(msg);
       exUser.save();
-      exAuthor.save();
       exNomaluser.save();
       res.sendStatus(201);
     }else{
@@ -135,7 +128,8 @@ router.post('/signup/email',async(req,res,next)=>{
 router.post('/signin',async(req,res,next)=>{
   const {email, password} = req.body;
   try{
-    const exUser = await User.findOne({email});
+    const exUser = await User.findOne({email}).
+    populate('normaluser');
     const result = await bcrypt.compare(password,exUser.password);
 
     if(result){
