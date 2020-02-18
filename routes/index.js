@@ -28,7 +28,7 @@ router.get('/signup/confirmEmail',async(req,res,next)=>{
     next(error);
   }
 });
-//일반유저 회원가입
+//회원가입(일반유저)
 router.post('/signup/user',async(req,res,next)=>{
   const { email, password, birth } = req.body;
   console.log(email,password,birth)
