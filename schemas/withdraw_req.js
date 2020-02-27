@@ -2,28 +2,27 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const { Types: { ObjectId }} = Schema;
-const withdraw_reqSchema = new Schema({
-  money:{
-    type: Number,
-    required: true,
-    default:0,
-  },
+const withdraw_reqSchema = new Schema({ //상태, 요청한 유저하고(user), 뭘로 요청했는지(paypal or account),  
   status:{
     type:String,
     required:true,
     default:"waiting", //complete
   },
-  account:{
+  user:{
     type:ObjectId,
-    ref:'Account'
+    ref: 'User',
+  },
+  way:{//paypal , account
+    type:String,
+    required:true,
   },
   data_created:{
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
   data_fix:{
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
 });
 

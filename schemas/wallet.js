@@ -19,7 +19,7 @@ const walletSchema = new Schema({
   },
   data_fix:{
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
 });
 

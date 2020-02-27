@@ -13,15 +13,15 @@ const submitlogSchema = new Schema({
   },
   data_until:{
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
   data_created:{
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
   data_fix:{
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
 });
 

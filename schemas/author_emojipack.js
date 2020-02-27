@@ -13,11 +13,11 @@ const author_emojipackSchema = new Schema({
   },
   data_created:{
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
   data_fix:{
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
 });
 

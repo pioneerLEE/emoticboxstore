@@ -68,45 +68,6 @@ router.post('/signup/user',async(req,res,next)=>{
     next(error);
   }
 });
-//회사 등록
-router.post('/signup/company',async(req,res,next)=>{
-  const { email, password, name, link, summary } = req.body;
-  try{
-    const [checkUser] = await User.find({email});
-    if(checkUser){ //email 중복 체크
-      res.send(401);
-    }else{ //회원가입
-      let key_for_verify = crypto.randomBytes(256).toString('hex').substr(100, 5)
-      key_for_verify += crypto.randomBytes(256).toString('base64').substr(50, 5); //인증 키
-      const url = 'http://' + req.get('host')+'/signup/confirmEmail'+'?key='+key_for_verify; //인증을 위한 주소
-      const hash = await bcrypt.hash(password, 5);
-      const exUser = new User({
-        email,
-        password:hash,
-        key_for_verify
-      });
-      const exCompany = new Company({
-        user:exUser._id,
-        name,
-        link,
-        summary
-      });
-      const msg = { //인증 메일
-        to: email,
-        from: 'sltkdaks@naver.com', //나중에 회사 메일 하나 만들기
-        subject: '회원가입 완료',
-        html : '<h1>이메일 인증을 위해 URL을 클릭해주세요.</h1><br>'+url
-      };
-      sgMail.send(msg);
-      exUser.save();
-      exCompany.save();
-      res.json(201);
-    }
-  }catch(error){
-    next(error);
-  }
-});
-
 
 //이메일 중복 체크
 router.post('/signup/email',async(req,res,next)=>{

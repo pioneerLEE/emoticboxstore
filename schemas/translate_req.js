@@ -15,7 +15,7 @@ const translate_reqSchema = new Schema({
   ],
   data_created: {
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
 });
 

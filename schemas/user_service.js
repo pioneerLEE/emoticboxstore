@@ -13,7 +13,7 @@ const user_serviceSchema = new Schema({
   },
   data_created: {
     type: Date,
-    default: Date(),
+    default: Date.now,
   },
 });
 
