@@ -14,12 +14,33 @@ const normaluserSchema = new Schema({
         ref:'Emojipack'
     }
   ],
+  dibs:[
+    {
+        type:ObjectId,
+        ref:'Emojipack'
+    }
+  ],
   services:[
     {
     type:ObjectId,
     ref:'Service'
     }
   ],
+  favorite:[
+    {
+      type:ObjectId,
+      ref:'Author'
+    }
+  ],
+  search_log:{
+    type: Array
+  },
+  usedpack:{
+    type: Array
+  },
+  linked_email:{
+    type: Array
+  },
   //생년월일
   birth:{
     type:Number,

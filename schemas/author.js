@@ -21,6 +21,12 @@ const authorSchema = new Schema({
         ref:'Emojipack'
     }
   ],
+  fans:[
+    {
+      type:ObjectId,
+      ref:'Normaluser'
+    }
+  ],
   //생년월일 ex)19980111
   birth:{
       type:Number,
