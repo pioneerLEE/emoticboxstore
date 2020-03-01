@@ -13,6 +13,9 @@ const emojipackSchema = new Schema({
     ref: 'Author',
     required:true,
   },
+  author_nick: {
+    type: String
+  },
   //이모티콘 설명
   summary: {
     type: String,

@@ -7,11 +7,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var socialRouter = require('./routes/social');
-var purchaseRouter = require('./routes/purchase');
-var mypageRouter = require('./routes/mypage')
-var searchRouter = require('./routes/search');
-var pageRouter = require('./routes/page');
+
 
 var passport = require('passport');
 var app = express();
@@ -31,11 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 app.use('/', indexRouter);
-app.use('/', pageRouter);
-app.use('/', purchaseRouter);
-app.use('/social',socialRouter);
-app.use('/mypage',mypageRouter);
-app.use('/search',searchRouter);
+
 
 //404처리 미들웨어
 app.use((req,res,next)=>{

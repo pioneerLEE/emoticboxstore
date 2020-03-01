@@ -9,7 +9,16 @@ const newlistSchema = new Schema({
         ref:'Emojipack'
     }
   ],
-  count:{
+  emojipacks_thumbnail:{
+    type:Array
+  },
+  emojipacks_name:{
+    type:Array
+  },
+  emojipacks_author_nick:{
+    type:Array
+  },
+  count:{ //MAX은 200
     type: Number,
     default:0,
     required: true,
@@ -20,4 +29,4 @@ const newlistSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('newlist', newlistSchema);
+module.exports = mongoose.model('Newlist', newlistSchema);
