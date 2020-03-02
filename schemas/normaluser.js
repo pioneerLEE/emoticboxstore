@@ -41,6 +41,12 @@ const normaluserSchema = new Schema({
   linked_email:{
     type: Array
   },
+  email_keys:{
+    type: Array
+  },
+  email_varify:{
+    type: Array
+  },
   //생년월일
   birth:{
     type:Number,
