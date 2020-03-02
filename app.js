@@ -7,7 +7,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-
+var pageRouter = require('./routes/page');
+var mypageRouter = require('./routes/mypage');
 
 var passport = require('passport');
 var app = express();
@@ -27,6 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 app.use('/', indexRouter);
+app.use('/', pageRouter);
+app.use('/mypage', mypageRouter);
 
 
 //404처리 미들웨어
