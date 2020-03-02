@@ -37,5 +37,7 @@ module.exports = () =>{
     require('./Country');
     require('./modificationreq');
     require('./proprietaryinfo');
+    require('./payment');
+    require('./platform');
 }
 
