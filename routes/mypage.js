@@ -18,7 +18,16 @@ router.get('/emojipacks',auth.authenticate(),async(req,res,next)=>{
     try{
         const exNormaluser = await Normaluser.findOne({user:req.user._id});
         if(exNormaluser){
-            res.status(200).json(exNormaluser.emojipacks);
+            let result = [];
+            await Promise.all(exNormaluser.emojipacks.map(async(pack,index)=>{
+                let emojipack = await Emojipack.findById(pack);
+                await result.push({
+                    thumbnail:emojipack.typicalEmoji,
+                    name:emojipack.name,
+                    author_nick:emojipack.author_nick
+                })
+            }));
+            res.status(200).json(result);
         }else{
             res.sendStatus(204);
         }
@@ -60,7 +69,7 @@ router.get('/services',auth.authenticate(),async(req,res,next)=>{
 //이메일 추가 연동하기
 router.patch('/newemail',auth.authenticate(),async(req,res,next)=>{
     try{
-        
+
     }catch(error){
         next(error);
     }
