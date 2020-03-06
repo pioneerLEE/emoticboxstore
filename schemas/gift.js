@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const { Types: { ObjectId }} = Schema;
-const GiftSchema = new Schema({
+const giftSchema = new Schema({
   money:{
     type: Number,
     required: true,
@@ -15,11 +15,14 @@ const GiftSchema = new Schema({
     type:ObjectId,
     ref:'User'
   },
+  receiver_email:{
+    type:String
+  },
   emojipack:{
     type:ObjectId,
     ref:'Emojipack'
   },
-  packment:{
+  payment:{
     type:ObjectId,
     ref:'Payment'
   },
@@ -42,4 +45,4 @@ const GiftSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Gift', GiftSchema);
+module.exports = mongoose.model('Gift', giftSchema);

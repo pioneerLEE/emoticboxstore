@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const router = express.Router();
 const User = require('../schemas/user');
 const Normaluser = require('../schemas/normaluser');
+const Email_directory = require('../schemas/email_directory');
 const JWT = require("jsonwebtoken");
 const auth = require('../middlewares/auth')();
 const cfg = require('../jwt_config');
@@ -120,8 +121,7 @@ router.get('/signup/email/:email',async(req,res,next)=>{
 router.post('/signin',async(req,res,next)=>{
   const {email, password} = req.body;
   try{
-    const exUser = await User.findOne({email}).
-    populate('normaluser');
+    const exUser = await User.findOne({email});
     const result = await bcrypt.compare(password,exUser.password);
     if(result){
       let token = JWT.sign({
@@ -136,11 +136,98 @@ router.post('/signin',async(req,res,next)=>{
         User:exUser
       });
     }else{
-      res.send(401); //수정해야함  
+      res.sendStatus(401); //수정해야함  
     }
   }catch(error){
     next(error);
   }
 });
+
+//비밀번호 변경
+router.patch('/password',auth.authenticate(),async(req,res,next)=>{
+  const { currentPassword, newPassword } = req.body;
+  try{
+    const exUser = await User.findOne({_id:req.user._id});
+    const result = await bcrypt.compare(currentPassword,exUser.password);
+    if(result){
+      const hash = await bcrypt.hash(newPassword, 5);
+      await User.findOneAndUpdate({_id:req.user._id},{password:hash});
+      res.sendStatus(200);
+    }else{
+      res.sendStatus(401);
+    }
+  }catch(error){
+    next(error);
+  }
+});
+
+//이메일 추가 연동하기
+router.post('/linkedemail',auth.authenticate(),async(req,res,next)=>{
+  const { newEmail } = req.body;
+  try{
+    const isNew = await Email_directory.findOne({email:newEmail});
+    const exUser  = await User.findOne({_id:req.user._id});
+    const exNormaluser = await Normaluser.findOne({user:req.user._id});
+    console.log(exNormaluser);
+    console.log(exNormaluser.linked_email.length);
+    if(!isNew && exNormaluser.linked_email.length<3){
+      await exNormaluser.linked_email.push(newEmail);
+      await exNormaluser.email_varify.push(false);
+      let key = crypto.randomBytes(256).toString('hex').substr(100, 5) + crypto.randomBytes(256).toString('base64').substr(50, 5); //인증 키
+      await exNormaluser.email_keys.push(key);
+      const url = 'http://' + req.get('host')+'/linkedemail/confirmEmail'+'?key='+key+'?user='+exUser._id; //인증을 위한 주소
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'kde740998@gmail.com',  // gmail 계정 아이디를 입력
+          pass: 'youngju3791'          // gmail 계정의 비밀번호를 입력
+        }
+      });
+      const msg = { //인증 메일
+        to: newEmail,
+        from: 'sltkdaks@naver.com', //나중에 회사 메일 하나 만들기
+        subject: '회원가입 완료',
+        html : '<h1>이메일 인증을 위해 URL을 클릭해주세요.</h1><br>'+url
+      };
+
+      transporter.sendMail(msg, function(error, info){
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+      const updateNormaluser= await Normaluser.findOneAndUpdate({_id:exNormaluser._id},{
+        linked_email:exNormaluser.linked_email,
+        email_varify:exNormaluser.email_varify,
+        email_keys:exNormaluser.email_keys
+      });
+      res.status(200).json(updateNormaluser);
+    }else if(exNormaluser.linked_email.length>=3){
+      res.sendStatus(202);
+    }else{
+      res.send("not new");
+    }
+  }catch(error){
+    next(error);
+  }
+});
+
+router.get('/linkedemail/confirmEmail',async(req,res,next)=>{
+  const {key_for_verify, user}=req.query.key
+  try{
+    const exNormaluser = await Normaluser.findOne({user});
+    
+    if(exNormaluser){
+      res.send(200)
+    }else{
+      res.send(401)
+    }
+  }catch(error){
+    next(error);
+  }
+});
+
 
 module.exports = router;

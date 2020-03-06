@@ -39,5 +39,6 @@ module.exports = () =>{
     require('./proprietaryinfo');
     require('./payment');
     require('./platform');
+    require('./email_directory');
 }
 

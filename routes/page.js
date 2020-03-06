@@ -107,7 +107,7 @@ router.get('/load',async(req,res,next)=>{ //추가적인 용량, 파일 형식�
             });
         }
         else if(emojiId){
-            emoji = await Emoji.findOne({_id:emojiId});
+            const emoji = await Emoji.findOne({_id:emojiId});
             fs.readFile((emoji.png512), (error, data) => {
                 if (error) {
                   console.error(error);
@@ -115,6 +115,8 @@ router.get('/load',async(req,res,next)=>{ //추가적인 용량, 파일 형식�
                 }
                 res.end(data);
             });
+        }else{
+            res.sendStatus(202);
         }
         
     }catch(error){
@@ -259,7 +261,7 @@ router.patch('/notdibs/:id',auth.authenticate(),async(req,res,next)=>{
 });
 
 
-//플랫폼 DB 생성하기
+//플랫폼 생성하기
 router.post('/platform',async(req,res,next)=>{
     const { name,info } = req.body;
     try{
@@ -269,6 +271,18 @@ router.post('/platform',async(req,res,next)=>{
         });
         await newPlatform.save();
         res.sendStatus(201);
+    }catch(error){
+        next(error);
+    }
+})
+
+//선물하기
+router.post('/gift/:id',auth.authenticate(),async(req,res,next)=>{
+    const { receiver_emails, money } = req.body;
+    try{
+        //이메일 목록을 탐색, 해당 이메일의 주인을 찾아냄
+        //판매기록
+        //주인을 찾을경우
     }catch(error){
         next(error);
     }
